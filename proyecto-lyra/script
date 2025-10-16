@@ -1,0 +1,64 @@
+const textElement = document.getElementById("story-text");
+const choicesElement = document.getElementById("choices");
+const sceneImage = document.getElementById("scene-image");
+
+const scenes = {
+  inicio: {
+    text: `En un futuro no muy distante, la humanidad vive bajo el control de los Dispositivos, máquinas invisibles y omnipresentes que dictan la rutina, los pensamientos y hasta las emociones de cada individuo...`,
+    image: "ilustraciones-ecos/cueva.png",
+    choices: [
+      { text: "Seguir caminando", nextScene: "bosque" },
+      { text: "Entrar a la cueva", nextScene: "ciudad" }
+    ]
+  },
+  bosque: {
+    text: `Lyra avanza por el bosque, los rayos de sol se filtran entre los árboles y en el horizonte, una ciudad se asoma como un recuerdo perdido...`,
+    image: "ilustraciones-ecos/bosque.png",
+    choices: [
+      { text: "Acercarse a la ciudad", nextScene: "ciudad" },
+      { text: "Regresar a la cueva", nextScene: "inicio" }
+    ]
+  },
+  ciudad: {
+    text: `La ciudad se alza imponente, fría y silenciosa. Las paredes blancas parecen respirar, y entre los edificios, el eco de un mundo olvidado resuena.`,
+    image: "ilustraciones-ecos/ciudad.png",
+    choices: [
+      { text: "Volver al bosque", nextScene: "bosque" }
+    ]
+  }
+};
+
+function typeWriter(text, i = 0) {
+  if (i < text.length) {
+    textElement.innerHTML = text.substring(0, i + 1);
+    setTimeout(() => typeWriter(text, i + 1), 35);
+  }
+}
+
+function showScene(sceneKey) {
+  const scene = scenes[sceneKey];
+  sceneImage.classList.add("fade-out");
+
+  setTimeout(() => {
+    sceneImage.src = scene.image;
+    sceneImage.classList.remove("fade-out");
+    sceneImage.classList.add("fade-in");
+
+    textElement.innerHTML = "";
+    typeWriter(scene.text);
+    showChoices(scene.choices);
+  }, 800);
+}
+
+function showChoices(choices) {
+  choicesElement.innerHTML = "";
+  choices.forEach(choice => {
+    const btn = document.createElement("button");
+    btn.textContent = choice.text;
+    btn.classList.add("choice-btn");
+    btn.onclick = () => showScene(choice.nextScene);
+    choicesElement.appendChild(btn);
+  });
+}
+
+showScene("inicio");
